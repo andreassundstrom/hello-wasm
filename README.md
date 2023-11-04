@@ -1,6 +1,10 @@
 # Rust WebAssembly
 
-This is a basic demo of compiling rust into web-assembly and hosting it with vite.
+This is a basic demo of compiling rust into web-assembly and hosting it with vite. Showing how to:
+
+- Manipulate the DOM from WASM
+- Read/write from WASM using serialization
+- Read directly from WASM:s linear memory
 
 ## To run the project
 

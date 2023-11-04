@@ -2,30 +2,49 @@ use wasm_bindgen::prelude::*;
 use web_sys::{console, window, CanvasRenderingContext2d, HtmlCanvasElement};
 
 #[wasm_bindgen]
-struct Player {
-    name: String,
+struct Position {
     position_x: f64,
     position_y: f64,
 }
 
-//Public
+#[wasm_bindgen]
+struct Player {
+    name: String,
+    position: Position,
+}
+
 #[wasm_bindgen]
 impl Player {
-    pub fn new(name: String) -> Player {
+    pub fn new(name: String, position_x: f64, position_y: f64) -> Player {
         console::log_1(&std::format!("Creating player '{name}'").into());
         Player {
-            name: name,
-            position_x: 0.0,
-            position_y: 0.0,
+            name,
+            position: Position {
+                position_x,
+                position_y,
+            },
         }
     }
 
-    // Draw to canvas
-    pub fn draw(&self) {
+    // Getters
+    pub fn position(&self) -> *const Position {
+        &self.position
+    }
+
+    pub fn name_size(&self) -> usize {
+        self.name.len()
+    }
+
+    pub fn name_ptr(&self) -> *const u8 {
+        self.name.as_ptr()
+    }
+
+    // Draw to canvas element
+    pub fn draw(&self, canvas_id: &str) {
         console::log_1(&std::format!("Drawing player '{}'", self.name).into());
 
         let document = window().unwrap().document().unwrap();
-        let canvas = document.get_element_by_id("canvas").unwrap();
+        let canvas = document.get_element_by_id(canvas_id).unwrap();
 
         let canvas: HtmlCanvasElement = canvas
             .dyn_into::<HtmlCanvasElement>()
@@ -42,9 +61,18 @@ impl Player {
         context.set_font("25px sans-serif");
 
         context
-            .fill_text(&self.name, self.position_x + 25.0, self.position_y + 25.0)
+            .fill_text(
+                &self.name,
+                self.position.position_x + 25.0,
+                self.position.position_y + 25.0,
+            )
             .unwrap();
-        context.fill_rect(self.position_x.into(), self.position_y.into(), 25.0, 25.0);
+        context.fill_rect(
+            self.position.position_x.into(),
+            self.position.position_y.into(),
+            25.0,
+            25.0,
+        );
     }
 }
 
